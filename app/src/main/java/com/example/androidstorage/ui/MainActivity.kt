@@ -34,7 +34,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        internalPhotosAdapter = InternalStorageAdapter {  }
+        internalPhotosAdapter = InternalStorageAdapter {
+            val isDeletionSuccessful = deletePhotoFromInternalStorage(it.name)
+            if (isDeletionSuccessful) {
+                loadPhotosFromInternalStorageIntoRV()
+                Toast.makeText(this, "Photo deleted successfully", Toast.LENGTH_SHORT).show()
+            }else {
+                Toast.makeText(this, "Failed to delete photo", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         setUpInternalStorageRecyclerView()
         loadPhotosFromInternalStorageIntoRV()
