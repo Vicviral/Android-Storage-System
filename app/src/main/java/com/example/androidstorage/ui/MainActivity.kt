@@ -8,6 +8,8 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.androidstorage.R
 import com.example.androidstorage.adapters.InternalStorageAdapter
 import com.example.androidstorage.databinding.ActivityMainBinding
@@ -21,12 +23,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var internalPhotos: InternalStorageAdapter
+    private lateinit var internalPhotosAdapter: InternalStorageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        internalPhotosAdapter = InternalStorageAdapter {  }
 
         val snapPhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
             val isSwitchPrivate = binding.switchPrivate.isChecked
@@ -42,10 +46,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun setUpInternalStorageRecyclerView() = binding.rvPrivatePhotos.apply {
+        adapter = internalPhotosAdapter
+        layoutManager = StaggeredGridLayoutManager(4, RecyclerView.VERTICAL)
+
+    }
+
     private fun loadPhotosFromInternalStorageIntoRV() {
         lifecycleScope.launch {
             val photos = loadPhotoFromInternalStorage()
-            internalPhotos.submitList(photos)
+            internalPhotosAdapter.submitList(photos)
         }
     }
 
