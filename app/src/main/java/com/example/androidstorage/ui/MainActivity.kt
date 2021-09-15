@@ -33,4 +33,18 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun savePhotoToInternalStorage(filename: String, bitmap: Bitmap): Boolean {
+        return try {
+            openFileOutput("$filename.jpg", MODE_PRIVATE).use { stream ->
+                if (!bitmap.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                    throw IOException("Couldn't save bitmap")
+                }
+            }
+            true
+        }catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
 }
