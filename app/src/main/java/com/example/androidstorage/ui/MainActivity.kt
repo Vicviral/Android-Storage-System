@@ -37,6 +37,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun deletePhotoFromInternalStorage(filename: String): Boolean {
+        return try {
+            deleteFile(filename)
+
+        }catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     private suspend fun loadPhotoFromInternalStorage(): List<Internal> {
         return  withContext(Dispatchers.IO) {
             val files = filesDir.listFiles()
