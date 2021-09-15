@@ -7,16 +7,21 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.lifecycle.lifecycleScope
 import com.example.androidstorage.R
+import com.example.androidstorage.adapters.InternalStorageAdapter
 import com.example.androidstorage.databinding.ActivityMainBinding
 import com.example.androidstorage.models.Internal
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var internalPhotos: InternalStorageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -35,6 +40,13 @@ class MainActivity : AppCompatActivity() {
             snapPhoto.launch()
         }
 
+    }
+
+    private fun loadPhotosFromInternalStorageIntoRV() {
+        lifecycleScope.launch {
+            val photos = loadPhotoFromInternalStorage()
+            internalPhotos.submitList(photos)
+        }
     }
 
     private fun deletePhotoFromInternalStorage(filename: String): Boolean {
