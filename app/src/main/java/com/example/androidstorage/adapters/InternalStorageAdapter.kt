@@ -44,7 +44,7 @@ class InternalStorageAdapter(
             val aspectRatio = photo.bmp.width.toFloat() / photo.bmp.height.toFloat()
             ConstraintSet().apply {
                 clone(root)
-                setDimensionRatio(ivPhoto.id, aspectRatio.toString())
+                setDimensionRatio(ivPhotoCard.id, aspectRatio.toString())
                 applyTo(root)
             }
 
