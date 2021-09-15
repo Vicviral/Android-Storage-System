@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -14,10 +16,12 @@ import com.example.androidstorage.R
 import com.example.androidstorage.adapters.InternalStorageAdapter
 import com.example.androidstorage.databinding.ActivityMainBinding
 import com.example.androidstorage.models.Internal
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,11 +36,20 @@ class MainActivity : AppCompatActivity() {
 
         internalPhotosAdapter = InternalStorageAdapter {  }
 
+        setUpInternalStorageRecyclerView()
+        loadPhotosFromInternalStorageIntoRV()
+
         val snapPhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
             val isSwitchPrivate = binding.switchPrivate.isChecked
 
             if (isSwitchPrivate) {
-                //Do something
+                val isSavedSuccessfully = savePhotoToInternalStorage(UUID.randomUUID().toString(), it)
+                if (isSavedSuccessfully) {
+                    loadPhotosFromInternalStorageIntoRV()
+                    Toast.makeText(this, "Photo saved successfully", Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(this, "Failed to save photo", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
